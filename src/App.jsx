@@ -863,7 +863,7 @@ export default function PortfolioApp() {
             Researcher | Engineer | Innovator in Advanced Manufacturing Technologies
           </p>
           <div className="hero-buttons">
-            <a href="#" className="btn btn-primary">
+            <a href="https://drive.google.com/file/d/1nGw-lxGnbpXIbxWnKNMz1FQWiSbL3bRf/view?usp=drivesdk" target="_blank" rel="noopener noreferrer" className="btn btn-primary">
               <FileDown size={20} />
               Download CV
             </a>

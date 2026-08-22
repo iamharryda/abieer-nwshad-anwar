@@ -10,28 +10,39 @@ export default function PortfolioApp() {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
-      
-      // Update active section based on scroll position
-      const sections = ['about', 'education', 'skills', 'publications', 'certificates'];
-      const current = sections.find(section => {
-        const element = document.getElementById(section);
+
+      const sections = ['home', 'about', 'education', 'skills', 'relevant-work', 'publications', 'conferences', 'certificates'];
+      const scrollPosition = window.scrollY + 200;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const sectionId = sections[i];
+        const element = document.getElementById(sectionId);
         if (element) {
-          const rect = element.getBoundingClientRect();
-          return rect.top <= 150 && rect.bottom >= 150;
+          if (scrollPosition >= element.offsetTop) {
+            setActiveSection(sectionId === 'home' ? '' : sectionId);
+            break;
+          }
         }
-        return false;
-      });
-      if (current) setActiveSection(current);
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const scrollToSection = (sectionId) => {
+    setActiveSection(sectionId === 'home' ? '' : sectionId);
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const navHeight = 90;
+      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = elementPosition - navHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
     }
     setIsMobileMenuOpen(false); // Close mobile menu after navigation
   };
@@ -368,6 +379,7 @@ export default function PortfolioApp() {
         .section {
           padding: 6rem 4rem;
           animation: fadeIn 0.8s ease-out;
+          scroll-margin-top: 90px;
         }
 
         @keyframes fadeIn {
@@ -540,6 +552,27 @@ export default function PortfolioApp() {
           transform: translateY(-2px);
         }
 
+        .section-dark .skill-category {
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-dark .skill-category h3 {
+          color: var(--text-primary);
+        }
+
+        .section-dark .skill-tag {
+          background: rgba(255, 255, 255, 0.05);
+          border: 2px solid rgba(255, 255, 255, 0.2);
+          color: var(--text-primary);
+        }
+
+        .section-dark .skill-tag:hover {
+          background: var(--accent);
+          color: var(--bg-primary);
+          border-color: var(--accent);
+        }
+
         /* Publications Section */
         .publications-list {
           max-width: 900px;
@@ -574,6 +607,12 @@ export default function PortfolioApp() {
           letter-spacing: 1px;
         }
 
+        .publication-badge.submitted {
+          background: rgba(0, 255, 136, 0.15);
+          color: var(--accent);
+          border: 1px solid var(--accent);
+        }
+
         .publication-title {
           font-size: 1.3rem;
           font-weight: 700;
@@ -601,6 +640,15 @@ export default function PortfolioApp() {
 
         .publication-link:hover {
           gap: 0.8rem;
+        }
+
+        .section-light .publication-item {
+          background: rgba(0, 0, 0, 0.03);
+          border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .section-light .publication-title {
+          color: var(--text-secondary);
         }
 
         /* Certificates Section */
@@ -672,6 +720,19 @@ export default function PortfolioApp() {
           color: var(--gray-light);
           font-size: 0.9rem;
           margin-bottom: 0.8rem;
+        }
+
+        .section-light .certificate-card {
+          background: rgba(0, 0, 0, 0.03);
+          border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .section-light .certificate-title {
+          color: var(--text-secondary);
+        }
+
+        .section-light .certificate-issuer {
+          color: var(--gray);
         }
 
         .certificate-date {
@@ -825,9 +886,12 @@ export default function PortfolioApp() {
           <li><a href="#about" className={activeSection === 'about' ? 'active' : ''} onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}>About</a></li>
           <li><a href="#education" className={activeSection === 'education' ? 'active' : ''} onClick={(e) => { e.preventDefault(); scrollToSection('education'); }}>Education</a></li>
           <li><a href="#skills" className={activeSection === 'skills' ? 'active' : ''} onClick={(e) => { e.preventDefault(); scrollToSection('skills'); }}>Skills</a></li>
+          <li><a href="#relevant-work" className={activeSection === 'relevant-work' ? 'active' : ''} onClick={(e) => { e.preventDefault(); scrollToSection('relevant-work'); }}>Relevant Work</a></li>
+          <li><a href="#publications" className={activeSection === 'publications' ? 'active' : ''} onClick={(e) => { e.preventDefault(); scrollToSection('publications'); }}>Publications</a></li>
+          <li><a href="#conferences" className={activeSection === 'conferences' ? 'active' : ''} onClick={(e) => { e.preventDefault(); scrollToSection('conferences'); }}>Conferences</a></li>
           <li><a href="#certificates" className={activeSection === 'certificates' ? 'active' : ''} onClick={(e) => { e.preventDefault(); scrollToSection('certificates'); }}>Certificates</a></li>
         </ul>
-        <div 
+        <div
           className={`hamburger ${isMobileMenuOpen ? 'active' : ''}`}
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
@@ -838,7 +902,7 @@ export default function PortfolioApp() {
       </nav>
 
       {/* Mobile Menu Overlay */}
-      <div 
+      <div
         className={`mobile-menu-overlay ${isMobileMenuOpen ? 'active' : ''}`}
         onClick={() => setIsMobileMenuOpen(false)}
       ></div>
@@ -850,6 +914,9 @@ export default function PortfolioApp() {
           <li><a href="#about" className={activeSection === 'about' ? 'active' : ''} onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}>About</a></li>
           <li><a href="#education" className={activeSection === 'education' ? 'active' : ''} onClick={(e) => { e.preventDefault(); scrollToSection('education'); }}>Education</a></li>
           <li><a href="#skills" className={activeSection === 'skills' ? 'active' : ''} onClick={(e) => { e.preventDefault(); scrollToSection('skills'); }}>Skills</a></li>
+          <li><a href="#relevant-work" className={activeSection === 'relevant-work' ? 'active' : ''} onClick={(e) => { e.preventDefault(); scrollToSection('relevant-work'); }}>Relevant Work</a></li>
+          <li><a href="#publications" className={activeSection === 'publications' ? 'active' : ''} onClick={(e) => { e.preventDefault(); scrollToSection('publications'); }}>Publications</a></li>
+          <li><a href="#conferences" className={activeSection === 'conferences' ? 'active' : ''} onClick={(e) => { e.preventDefault(); scrollToSection('conferences'); }}>Conferences</a></li>
           <li><a href="#certificates" className={activeSection === 'certificates' ? 'active' : ''} onClick={(e) => { e.preventDefault(); scrollToSection('certificates'); }}>Certificates</a></li>
         </ul>
       </div>
@@ -863,7 +930,7 @@ export default function PortfolioApp() {
             Researcher | Engineer | Innovator in Advanced Manufacturing Technologies
           </p>
           <div className="hero-buttons">
-            <a href="https://drive.google.com/file/d/1nGw-lxGnbpXIbxWnKNMz1FQWiSbL3bRf/view?usp=drivesdk" target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+            <a href="https://drive.google.com/file/d/1CcWpZt_IEws7f3utK0LZm_2Ytn0FY2g1/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="btn btn-primary">
               <FileDown size={20} />
               Download CV
             </a>
@@ -932,24 +999,66 @@ export default function PortfolioApp() {
       </section>
 
       {/* Skills Section */}
-      <section id="skills" className="section section-light">
-        <h2 className="section-title">Skills & Expertise</h2>
+      <section id="skills" className="section section-dark">
+        <h2 className="section-title">Technical Skills</h2>
         <div className="skills-grid">
           <div className="skill-category">
-            <h3>Additive Manufacturing</h3>
+            <h3>Programming Languages</h3>
             <div className="skill-tags">
-              <span className="skill-tag">3D Printing</span>
-              <span className="skill-tag">Process Optimization</span>
-              <span className="skill-tag">Material Extrusion</span>
+              <span className="skill-tag">Python</span>
+              <span className="skill-tag">MATLAB</span>
+              <span className="skill-tag">C/C++</span>
             </div>
           </div>
 
           <div className="skill-category">
-            <h3>CAD & Simulation Tools</h3>
+            <h3>CAD / CAE Tools</h3>
             <div className="skill-tags">
-              <span className="skill-tag">ANSYS</span>
               <span className="skill-tag">SolidWorks</span>
               <span className="skill-tag">AutoCAD</span>
+              <span className="skill-tag">CATIA</span>
+              <span className="skill-tag">Fusion 360</span>
+            </div>
+          </div>
+
+          <div className="skill-category">
+            <h3>Manufacturing Technologies</h3>
+            <div className="skill-tags">
+              <span className="skill-tag">CNC Machining</span>
+              <span className="skill-tag">Additive Manufacturing (3D Printing)</span>
+              <span className="skill-tag">Material Extrusion</span>
+              <span className="skill-tag">CAM</span>
+              <span className="skill-tag">Assembly Automation</span>
+            </div>
+          </div>
+
+          <div className="skill-category">
+            <h3>Analysis &amp; Simulation</h3>
+            <div className="skill-tags">
+              <span className="skill-tag">ANSYS</span>
+              <span className="skill-tag">Statistical Analysis</span>
+              <span className="skill-tag">Finite Element Analysis (FEA)</span>
+              <span className="skill-tag">Computational Fluid Dynamics (CFD)</span>
+            </div>
+          </div>
+
+          <div className="skill-category">
+            <h3>Machine Learning &amp; AI</h3>
+            <div className="skill-tags">
+              <span className="skill-tag">PyTorch</span>
+              <span className="skill-tag">Scikit-learn</span>
+              <span className="skill-tag">Neural Networks</span>
+            </div>
+          </div>
+
+          <div className="skill-category">
+            <h3>Industry 4.0</h3>
+            <div className="skill-tags">
+              <span className="skill-tag">IoT Sensors</span>
+              <span className="skill-tag">Data Analytics</span>
+              <span className="skill-tag">Data Visualization</span>
+              <span className="skill-tag">Process Optimization</span>
+              <span className="skill-tag">Smart Manufacturing Systems</span>
             </div>
           </div>
 
@@ -963,12 +1072,61 @@ export default function PortfolioApp() {
           </div>
 
           <div className="skill-category">
-            <h3>Programming & Data Analysis</h3>
+            <h3>Tools &amp; Documentation</h3>
             <div className="skill-tags">
-              <span className="skill-tag">Python</span>
-              <span className="skill-tag">MATLAB</span>
-              <span className="skill-tag">Data Visualization</span>
+              <span className="skill-tag">Git</span>
+              <span className="skill-tag">GitHub</span>
+              <span className="skill-tag">LaTeX</span>
+              <span className="skill-tag">Technical Writing</span>
+              <span className="skill-tag">Research Papers</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Relevant Work Section */}
+      <section id="relevant-work" className="section section-dark">
+        <h2 className="section-title">Relevant Work &amp; Focus Areas</h2>
+        <div className="skills-grid">
+          <div className="skill-category">
+            <h3>Mechanical Engineering</h3>
+            <div className="skill-tags">
+              <span className="skill-tag">Manufacturing Processes</span>
+              <span className="skill-tag">Materials Science</span>
+              <span className="skill-tag">CAD/CAM Systems</span>
+              <span className="skill-tag">Automation Control</span>
+              <span className="skill-tag">Thermodynamics</span>
+              <span className="skill-tag">Mechanics of Materials</span>
+            </div>
+          </div>
+
+          <div className="skill-category">
+            <h3>Nanotechnology</h3>
+            <div className="skill-tags">
+              <span className="skill-tag">Nano-materials Characterization</span>
+              <span className="skill-tag">Surface Engineering</span>
+              <span className="skill-tag">Computational Methods</span>
+              <span className="skill-tag">Advanced Materials Processing</span>
+            </div>
+          </div>
+
+          <div className="skill-category">
+            <h3>Data Science &amp; ML</h3>
+            <div className="skill-tags">
+              <span className="skill-tag">Machine Learning Algorithms</span>
               <span className="skill-tag">Statistical Analysis</span>
+              <span className="skill-tag">Data-Driven Manufacturing</span>
+              <span className="skill-tag">Neural Networks</span>
+            </div>
+          </div>
+
+          <div className="skill-category">
+            <h3>Robotics</h3>
+            <div className="skill-tags">
+              <span className="skill-tag">Robot Design</span>
+              <span className="skill-tag">Servo Mechanisms</span>
+              <span className="skill-tag">Control Systems</span>
+              <span className="skill-tag">Humanoid Robotics</span>
             </div>
           </div>
         </div>
@@ -976,19 +1134,97 @@ export default function PortfolioApp() {
 
       {/* Publications Section */}
       <section id="publications" className="section section-dark">
-        <h2 className="section-title">Publications & Research</h2>
+        <h2 className="section-title">Publications &amp; Research</h2>
         <div className="publications-list">
           <div className="publication-item">
-            <span className="publication-badge">MTL - Net</span>
+            <span className="publication-badge">Published</span>
             <h3 className="publication-title">
-              A Unit of Deep Learning Architecture for Predicting Production E-money, Defect Rate, and Speed in Industry 4.0 Systems
+              MTL-Net: A Unified Deep Learning Architecture | Industry 4.0 Systems
             </h3>
             <p className="publication-details">
-              LNME state-of-the-art Multi-Task Machine Learning Framework for Manufacturing 
-              Optimization in Industry 4.0 Systems Published in MDPI
+              Published research on predicting production efficiency, defect rate, and speed in Industry 4.0 systems using multi-task learning neural networks
             </p>
-            <a href="https://www.researchsquare.com/article/rs-7915830/v1" target="_blank" rel="noopener noreferrer" className="publication-link">
+            <a href="https://www.researchsquare.com/article/rs-7915830/latest.pdf" target="_blank" rel="noopener noreferrer" className="publication-link">
               Read Publication <ExternalLink size={16} />
+            </a>
+          </div>
+
+          <div className="publication-item">
+            <span className="publication-badge">Published</span>
+            <h3 className="publication-title">
+              Leakage-Robust Evaluation and Data-Scale Sensitivity of Attention-Enhanced Multi-Task Learning for Joint Fault Diagnosis and Remaining Useful Life Estimation
+            </h3>
+            <p className="publication-details">
+              Journal: Measurement / Advanced Engineering Informatics / Results in Engineering (target-dependent)
+            </p>
+            <a href="https://arxiv.org/html/2607.16493v1" target="_blank" rel="noopener noreferrer" className="publication-link">
+              Read Publication <ExternalLink size={16} />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Conferences Section */}
+      <section id="conferences" className="section section-dark">
+        <h2 className="section-title">Conferences</h2>
+        <div className="publications-list">
+          <div className="publication-item">
+            <span className="publication-badge">Published</span>
+            <h3 className="publication-title">
+              Regime-Aware Machine Learning Surrogate and Inverse Design Framework for E-Glass/PDMS Random Unidirectional Composites.
+            </h3>
+            <a href="https://spicscon.org/2026/" target="_blank" rel="noopener noreferrer" className="publication-link">
+              View Conference <ExternalLink size={16} />
+            </a>
+          </div>
+
+          <div className="publication-item">
+            <span className="publication-badge">Published</span>
+            <h3 className="publication-title">
+              Fed-GraphSAGE: Lightweight Federated Graph Learning for Privacy-Preserving Supply Chain Optimization.
+            </h3>
+            <a href="https://spicscon.org/2026/" target="_blank" rel="noopener noreferrer" className="publication-link">
+              View Conference <ExternalLink size={16} />
+            </a>
+          </div>
+
+          <div className="publication-item">
+            <span className="publication-badge submitted">Submitted</span>
+            <h3 className="publication-title">
+              Light Weight Machine Learning for Explainable MOF Application Screening from Precursor Chemistry.
+            </h3>
+            <a href="https://csa.ru.ac.bd/icrpset/2026/" target="_blank" rel="noopener noreferrer" className="publication-link">
+              View Submission <ExternalLink size={16} />
+            </a>
+          </div>
+
+          <div className="publication-item">
+            <span className="publication-badge submitted">Submitted</span>
+            <h3 className="publication-title">
+              Small language model Framework - material knowledge Graph Extraction : Model Scale , Prompting &amp; Reliability.
+            </h3>
+            <a href="https://csa.ru.ac.bd/icrpset/2026/" target="_blank" rel="noopener noreferrer" className="publication-link">
+              View Submission <ExternalLink size={16} />
+            </a>
+          </div>
+
+          <div className="publication-item">
+            <span className="publication-badge submitted">Submitted</span>
+            <h3 className="publication-title">
+              Correctness, Efficiency &amp; Leakage-Aware Re-Evaluation of Winograd Circular Convocation for ECG Beat Screening.
+            </h3>
+            <a href="https://iccit.org.bd/2026/" target="_blank" rel="noopener noreferrer" className="publication-link">
+              View Submission <ExternalLink size={16} />
+            </a>
+          </div>
+
+          <div className="publication-item">
+            <span className="publication-badge submitted">Submitted</span>
+            <h3 className="publication-title">
+              Classification-Preserving Residual Lesion Attention for Leakage-Audited Brain MRI Tumor Classification.
+            </h3>
+            <a href="https://iccit.org.bd/2026/" target="_blank" rel="noopener noreferrer" className="publication-link">
+              View Submission <ExternalLink size={16} />
             </a>
           </div>
         </div>
@@ -999,7 +1235,7 @@ export default function PortfolioApp() {
         <h2 className="section-title">Certificates & Achievements</h2>
         <div className="certificates-grid">
           <div className="certificate-card">
-            <div className="certificate-image" style={{backgroundImage: 'url(https://i.ibb.co/N635L6xm/Nano-tech-certificate-page-0001.jpg)', backgroundSize: 'cover', backgroundPosition: 'center'}}>
+            <div className="certificate-image" style={{ backgroundImage: 'url(https://i.ibb.co/N635L6xm/Nano-tech-certificate-page-0001.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
               <span className="certificate-badge">Research</span>
             </div>
             <div className="certificate-content">
@@ -1015,7 +1251,7 @@ export default function PortfolioApp() {
           </div>
 
           <div className="certificate-card">
-            <div className="certificate-image" style={{backgroundImage: 'url(https://i.ibb.co/fdSPrPx7/Certificate-1-page-0001.jpg)', backgroundSize: 'cover', backgroundPosition: 'center'}}>
+            <div className="certificate-image" style={{ backgroundImage: 'url(https://i.ibb.co/fdSPrPx7/Certificate-1-page-0001.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
               <span className="certificate-badge">Climate Action</span>
             </div>
             <div className="certificate-content">
@@ -1031,7 +1267,7 @@ export default function PortfolioApp() {
           </div>
 
           <div className="certificate-card">
-            <div className="certificate-image" style={{backgroundImage: 'url(https://i.ibb.co/ks7Z9j5Y/Certificate-2-page-0001.jpg)', backgroundSize: 'cover', backgroundPosition: 'center'}}>
+            <div className="certificate-image" style={{ backgroundImage: 'url(https://i.ibb.co/ks7Z9j5Y/Certificate-2-page-0001.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
               <span className="certificate-badge">Leadership</span>
             </div>
             <div className="certificate-content">
@@ -1047,7 +1283,7 @@ export default function PortfolioApp() {
           </div>
 
           <div className="certificate-card">
-            <div className="certificate-image" style={{backgroundImage: 'url(https://i.ibb.co/SX96qBgR/certificate-3-page-0001.jpg)', backgroundSize: 'cover', backgroundPosition: 'center'}}>
+            <div className="certificate-image" style={{ backgroundImage: 'url(https://i.ibb.co/SX96qBgR/certificate-3-page-0001.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
               <span className="certificate-badge">Leadership</span>
             </div>
             <div className="certificate-content">
@@ -1063,7 +1299,7 @@ export default function PortfolioApp() {
           </div>
 
           <div className="certificate-card">
-            <div className="certificate-image" style={{backgroundImage: 'url(https://i.ibb.co/Cs1N6d82/Certificate-4-page-0001.jpg)', backgroundSize: 'cover', backgroundPosition: 'center'}}>
+            <div className="certificate-image" style={{ backgroundImage: 'url(https://i.ibb.co/Cs1N6d82/Certificate-4-page-0001.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
               <span className="certificate-badge">Award</span>
             </div>
             <div className="certificate-content">
@@ -1079,7 +1315,7 @@ export default function PortfolioApp() {
           </div>
 
           <div className="certificate-card">
-            <div className="certificate-image" style={{backgroundImage: 'url(https://i.ibb.co/j23TR92/Certificate-5-page-0001.jpg)', backgroundSize: 'cover', backgroundPosition: 'center'}}>
+            <div className="certificate-image" style={{ backgroundImage: 'url(https://i.ibb.co/j23TR92/Certificate-5-page-0001.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
               <span className="certificate-badge">Peace</span>
             </div>
             <div className="certificate-content">
@@ -1095,7 +1331,7 @@ export default function PortfolioApp() {
           </div>
 
           <div className="certificate-card">
-            <div className="certificate-image" style={{backgroundImage: 'url(https://i.ibb.co/GQVvgSRp/Certificates-6-page-0001.jpg)', backgroundSize: 'cover', backgroundPosition: 'center'}}>
+            <div className="certificate-image" style={{ backgroundImage: 'url(https://i.ibb.co/GQVvgSRp/Certificates-6-page-0001.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
               <span className="certificate-badge">Leadership</span>
             </div>
             <div className="certificate-content">
@@ -1117,7 +1353,7 @@ export default function PortfolioApp() {
         <div className="footer-content">
           <h3 className="footer-name">Abieer Nwshad Anwar</h3>
           <p className="footer-title">PhD Candidate - Additive Manufacturing Engineer</p>
-          
+
           <div className="social-links">
             <a href="https://www.linkedin.com/in/abieer-nwshad-anwar-11a6a1201/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Linkedin size={20} /></a>
             <a href="https://scholar.google.com/citations?user=pCc_tx0AAAAJ&hl=en&oi=ao" target="_blank" rel="noopener noreferrer" aria-label="Google Scholar">

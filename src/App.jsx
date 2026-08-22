@@ -1173,8 +1173,8 @@ export default function PortfolioApp() {
             <h3 className="publication-title">
               Regime-Aware Machine Learning Surrogate and Inverse Design Framework for E-Glass/PDMS Random Unidirectional Composites.
             </h3>
-            <a href="https://spicscon.org/2026/" target="_blank" rel="noopener noreferrer" className="publication-link">
-              View Conference <ExternalLink size={16} />
+            <a href="https://drive.google.com/file/d/1uYrhOqU_lCbR5nRzsNgnatZcmr4rmBnx/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="publication-link">
+              View Certificate <ExternalLink size={16} />
             </a>
           </div>
 
@@ -1183,8 +1183,8 @@ export default function PortfolioApp() {
             <h3 className="publication-title">
               Fed-GraphSAGE: Lightweight Federated Graph Learning for Privacy-Preserving Supply Chain Optimization.
             </h3>
-            <a href="https://spicscon.org/2026/" target="_blank" rel="noopener noreferrer" className="publication-link">
-              View Conference <ExternalLink size={16} />
+            <a href="https://drive.google.com/file/d/1cMzTAEd4QrdoSuBV1IpLlKDaHVwLawtr/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="publication-link">
+              View Certificate <ExternalLink size={16} />
             </a>
           </div>
 

@@ -1365,7 +1365,7 @@ export default function PortfolioApp() {
           </div>
 
           <p className="footer-copyright">
-            © 2024 ALL RIGHTS RESERVED. ABIEER NWSHAD ANWAR
+            © {new Date().getFullYear()} ALL RIGHTS RESERVED. ABIEER NWSHAD ANWAR
           </p>
         </div>
       </footer>

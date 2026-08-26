@@ -974,7 +974,7 @@ export default function PortfolioApp() {
             <div className="education-header">
               <div>
                 <h3 className="education-degree">Masters of Nano Technology Engineering</h3>
-                <p className="education-school">Excellence in University of Science and Technology</p>
+                <p className="education-school">Sapienza University of Rome</p>
               </div>
               <span className="education-date">Sept 2023 - Present</span>
             </div>
